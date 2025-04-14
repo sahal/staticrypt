@@ -1,7 +1,8 @@
 version: '3'
 
 env:
-  PLAYDIR: /tmp/staticrypt
+  TASK_FILE: unset
+  PLAYDIR: unset
 
 tasks:
   build:
@@ -13,4 +14,29 @@ tasks:
     desc: Run the staticrypt:latest image and mount $PLAYDIR
     cmds:
       - mkdir -p "$PLAYDIR" && podman run -v $PLAYDIR:/home/node/app:rw -it staticrypt:latest /bin/bash
+
+  rename:
+    desc: Rename $TASK_FILE to all lowercase and use - instead of spaces.
+    cmds:
+      - perl-rename --interactive 'y/[A-Z]/[a-z]/;s/\ /-/g' "$TASK_FILE"
+
+  rename-all:
+    desc: Rename all .html files to all lowercase and use - instead of spaces.
+    cmds:
+      - perl-rename --interactive 'y/[A-Z]/[a-z]/;s/\ /-/g' *.html
+
+  tidy:
+    desc: Run $TASK_FILE files through html tidy.
+    cmds:
+      - tidy -i -m "$TASK_FILE"
+
+  tidy-all:
+    desc: Run all html files through html tidy.
+    cmds:
+      - find . -type f -name "*.html" -exec tidy -i -m "{}" \;
+
+  encrypt-podman:
+    desc: Use staticrypt to encrypt $TASK_FILE.
+    cmds:
+      - ./scripts/encrypt-file.sh
 
