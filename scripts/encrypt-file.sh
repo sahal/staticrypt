@@ -35,7 +35,11 @@ echo PLAYDIR: "${PLAYDIR}"
 echo TASK_FILE: "${TASK_FILE}"
 
 cp "${TASK_FILE}" "${PLAYDIR}/input.html"
-podman run -v "${PLAYDIR}":/home/node/app:rw staticrypt:latest
+podman run  \
+            -v "${PLAYDIR}":/home/node/app:rw  \
+            -e PASSWORD_LENGTH=64 \
+            -e PASSWORD_CHARSET=a-zA-Z0-9 \
+            staticrypt:latest
 
 echo "Test out the file at output.html"
 nohup firefox "${PLAYDIR}/output.html" >/dev/null

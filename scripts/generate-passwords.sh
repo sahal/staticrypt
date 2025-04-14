@@ -1,18 +1,28 @@
-#!/bin/sh -e
+#! /usr/bin/env bash
 # by Sahal Ansari - github@sahal.info
 # based on this blog post by Kevin Goodman
-# http://blog.colovirt.com/2009/01/07/linux-generating-strong-passwords-using-randomurandom/
-# NOTE: install haveged for faster/'better' results!
+# https://web.archive.org/web/20090203104553/blog.colovirt.com/2009/01/07/linux-generating-strong-passwords-using-randomurandom/
+# NOW WITH MORE ENV VARS!
 
-length="${1:-64}"
-count=1
+set -e
+set -u
+
+PASSWORD_LENGTH="${PASSWORD_LENGTH:-64}"
+PASSWORD_COUNT=${PASSWORD_COUNT:-1}
+#alpha-numeric-special chars
+PASSWORD_CHARSET="${PASSWORD_CHARSET:-unset}"
+#alpha-numeric
+#PASSWORD_CHARSET="a-zA-Z0-9"
 
 random_source="/dev/urandom"
-#random_source="/dev/random"
 
-#alpha-numeric-special chars
-chars="a-zA-Z0-9-_!@#$%^&*()_+{}|:<>?="
-#alpha-numeric
-#chars="a-zA-Z0-9"
+# parameter expansion and default values don't work for this particular
+# variable values
+if [[ "${PASSWORD_CHARSET}" == "unset" ]]; then
+  PASSWORD_CHARSET="a-zA-Z0-9-_!@#$%^&*()_+{}|:<>?=}"
+fi
 
-cat "$random_source" | tr -dc "$chars" | fold -w "$length" | head -n "$count"| grep -i '[!"$chars"]'
+tr -dc "$PASSWORD_CHARSET" < "$random_source" | \
+  fold -w "$PASSWORD_LENGTH" | \
+  head -n "$PASSWORD_COUNT" | \
+  grep -i '[!"$PASSWORD_CHARSET"]'
