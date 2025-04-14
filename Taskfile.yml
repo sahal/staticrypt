@@ -1,0 +1,16 @@
+version: '3'
+
+env:
+  PLAYDIR: /tmp/staticrypt
+
+tasks:
+  build:
+    desc: Build the Container Image using podman
+    cmds:
+      - podman build -t staticrypt:latest .
+
+  run:
+    desc: Run the staticrypt:latest image and mount $PLAYDIR
+    cmds:
+      - mkdir -p "$PLAYDIR" && podman run -v $PLAYDIR:/home/node/app:rw -it staticrypt:latest /bin/bash
+
