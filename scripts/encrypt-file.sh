@@ -39,6 +39,7 @@ podman run  \
             -v "${PLAYDIR}":/home/node/app:rw  \
             -e PASSWORD_LENGTH=64 \
             -e PASSWORD_CHARSET=a-zA-Z0-9 \
+            -e STATICRYPT_PASSWORD="${STATICRYPT_PASSWORD}" \
             staticrypt:latest
 
 echo "Test out the file at output.html"

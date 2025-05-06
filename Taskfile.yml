@@ -3,6 +3,7 @@ version: '3'
 env:
   TASK_FILE: unset
   PLAYDIR: unset
+  STATICRYPT_PASSWORD: unset
 
 tasks:
   build:
@@ -36,7 +37,6 @@ tasks:
       - find . -type f -name "*.html" -exec tidy -i -m "{}" \;
 
   encrypt-podman:
-    desc: Use staticrypt to encrypt $TASK_FILE.
+    desc: Use staticrypt to encrypt $TASK_FILE with $STATICRYPT_PASSWORD
     cmds:
       - ./scripts/encrypt-file.sh
-
